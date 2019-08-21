@@ -1,13 +1,13 @@
-# -*- encoding:utf-8 -*-
+# coding = utf-8
+
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 import time
 from threading import Thread
 
 ACCOUNTS = {
-    "username": "userpassword"
+    "username": "password"
 }
-chrome_driver = "D:\chromedriver.exe"
+chrome_driver = "D:\chromedriver.exe"   # Win32_76.0.3809.126
 
 # Mate 20 X(5G)
 BUY_URL = 'https://www.vmall.com/product/10086533947561.html'
@@ -51,12 +51,9 @@ def onQueue(driver, user):
     while True:
         try:
             errorbutton = driver.find_element_by_link_text('返回活动页面')  # 出现这个一般是失败了。。
-            tryAgain = driver.find_element_by_link_text('再试一次')
-            tryAgain.click()
             if errorbutton.is_enabled():
                 print(user + "：出现返回活动页面，可能抢购失败。。。")
                 errorbutton.click()
-            print(user + ':再试一次点击')
             pass
         except:
             print(user + ':排队中')
@@ -93,12 +90,6 @@ def goToBuy(driver, user):
                 print(user + '立即申购')
                 break
             time.sleep(0.2)
-            if BUY_URL == driver.current_url:  # 还在当前页面自动刷新
-                driver.get(BUY_URL)
-                pass
-            else:
-                print(user + '手动点击了申购')
-                break
         else:
             time.sleep(15)
             print(user + '睡眠15s，未到脚本开启时间：' + BEGIN_GO)
@@ -113,14 +104,12 @@ def goToBuy(driver, user):
 def loginMall(user, pwd):
     driver = webdriver.Chrome(executable_path=chrome_driver)
     driver.get(LOGIN_URL)
-    hasLogin = False
     try:
+        time.sleep(5)  # 等待页面加载完成
         account = driver.find_element_by_xpath('//*[@id="login_userName"]')
-        account.click()
         account.send_keys(user)
         time.sleep(1)
         password = driver.find_element_by_xpath('//*[@id="login_password"]')
-        password.click()
         password.send_keys(pwd)
         print(user + '输入了账号密码，等待手动登录')
     except:
